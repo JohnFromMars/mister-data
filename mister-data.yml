@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mister-data
+spec:
+  minReadySeconds: 30
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: app-mister-data
+  template:
+    metadata:
+      labels:
+        app: app-mister-data
+    spec:
+      containers:
+        - name: mister-data
+          image: 127.0.0.1:5000/mister-data:2.0
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            failureThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          ports:
+            - containerPort: 8080
+
+
